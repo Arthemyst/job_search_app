@@ -2,9 +2,9 @@ import requests
 from bs4 import BeautifulSoup
 import re
 from datetime import datetime, timedelta
-import pandas as pd
-import numpy as np
+import streamlit as st
 
+@st.cache
 def bulldog_page_job_offers() -> list:
 
     bulldog_list = list()
@@ -23,7 +23,7 @@ def bulldog_page_job_offers() -> list:
             position_element = job_element.find("p", class_="tracking-05 uppercase md:my-4")
             
             company_element = job_element.find("p", class_="text-sm md:text-xxs md:text-center my-2 font-medium text-gray-300")
-            job_types_element = job_element.find("p", class_="font-medium mb-4 md:my-4 flex flex-wrap items-center")
+            
             links = job_element.find("h3", class_="text-c28 font-medium mb-3 w-full md:hidden")
             
             for link in links:
@@ -42,6 +42,7 @@ def bulldog_page_job_offers() -> list:
             bulldog_list.append(bulldog_dict)
     return bulldog_list
 
+@st.cache
 def nofluffjobs_page_job_offers() -> list:
 
     nofluffjobs_list = list()
@@ -51,7 +52,7 @@ def nofluffjobs_page_job_offers() -> list:
 
     page = requests.get(url)
     soup = BeautifulSoup(page.content, "html.parser")
-    results = soup.find("div", class_="list-container ng-star-inserted")
+    
     
     for job_element in soup.select('a[class*="posting-list-item posting-list-item--"]'):
         
@@ -59,16 +60,20 @@ def nofluffjobs_page_job_offers() -> list:
         nofluffjobs_dict = dict()
         company_element = job_element.find("span", class_="d-block posting-title__company text-truncate")
         job_title_element = job_element.find("h3", class_="posting-title__position text-truncate color-main ng-star-inserted")
-        if "Fullstack" not in job_title_element.text and "DevOps" not in job_title_element.text:
+        if "Fullstack" not in job_title_element.text and "DevOps" not in job_title_element.text and "Golang" not in job_title_element.text:
             link_url = "http://nofluffjobs.com" + job_element["href"]
             page_job_element = requests.get(link_url)
             soup_page = BeautifulSoup(page_job_element.content, "html.parser")
             position = soup_page.find("span", class_="mr-10 font-weight-medium")
             publication_date_element = soup_page.find("div", class_="posting-time-row")
-            days_after_publication = int(re.findall(r'\b\d+\b', publication_date_element.text.strip())[0])
-            publication_date = (datetime.today() - (timedelta(days=days_after_publication))).strftime("%Y-%m-%d")
-            #creation of job offers details dictionary
             
+            days_after_publication = re.findall(r'\b\d+\b', publication_date_element.text.strip())
+            if len(days_after_publication) == 0:
+                 publication_date = datetime.today().strftime("%Y-%m-%d")
+            
+            else:
+                publication_date = (datetime.today() - (timedelta(days=int(days_after_publication[0])))).strftime("%Y-%m-%d")
+                       
             nofluffjobs_dict["publication_date"] = publication_date
             nofluffjobs_dict["company"] = company_element.text.strip()
             nofluffjobs_dict["title"] = job_title_element.text.strip()
