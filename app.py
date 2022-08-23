@@ -3,7 +3,6 @@ import streamlit as st
 
 import scraping_functions as sf
 
-
 df = sf.merge_dataframes()
 
 
