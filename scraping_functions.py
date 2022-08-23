@@ -1,6 +1,7 @@
 import re
 from datetime import datetime, timedelta
 
+import pandas as pd
 import requests
 import streamlit as st
 from bs4 import BeautifulSoup
@@ -132,3 +133,32 @@ def nofluffjobs_page_job_offers() -> list:
 
                 nofluffjobs_list.append(nofluffjobs_dict)
     return nofluffjobs_list
+
+
+def merge_dataframes():
+
+    nofluffjobs_list = nofluffjobs_page_job_offers()
+    df_raw_1 = pd.DataFrame.from_records(nofluffjobs_list)
+    df_1 = df_raw_1.copy()
+
+    bulldogjob_list = bulldog_page_job_offers()
+    df_raw_2 = pd.DataFrame.from_records(bulldogjob_list)
+    df_2 = df_raw_2.copy()
+
+    df_merged = pd.concat([df_1, df_2], axis=0, ignore_index=True)
+    if len(df_merged) != 0:
+
+        df_merged["publication_date"] = pd.to_datetime(
+            df_merged["publication_date"], infer_datetime_format=True
+        )
+        df_merged.drop_duplicates(
+            subset=["publication_date", "company", "title"],
+            inplace=True,
+            ignore_index=True,
+        )
+        df_merged["publication_date"] = df_merged["publication_date"].dt.strftime(
+            "%Y-%m-%d"
+        )
+        df_merged.sort_values(["publication_date"], inplace=True, ascending=False)
+
+    return df_merged
