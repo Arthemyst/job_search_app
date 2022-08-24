@@ -26,8 +26,8 @@ last_day = df["publication_date"].min()
 last_date = datetime.datetime.strptime(last_day, "%Y-%m-%d")
 today = datetime.date.today()
 
-end_date = st.sidebar.date_input("End date", today)
-start_date = st.sidebar.date_input("Start date", last_date)
+end_date = st.sidebar.date_input("The latest:", today)
+start_date = st.sidebar.date_input("The oldest:", last_date)
 
 
 # Filtering data
