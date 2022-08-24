@@ -7,7 +7,6 @@ import streamlit as st
 from bs4 import BeautifulSoup
 
 
-@st.cache
 def bulldog_page_job_offers() -> list:
 
     bulldog_list = list()
@@ -73,7 +72,6 @@ def bulldog_page_job_offers() -> list:
     return bulldog_list
 
 
-@st.cache
 def nofluffjobs_page_job_offers() -> list:
 
     nofluffjobs_list = list()
@@ -135,6 +133,7 @@ def nofluffjobs_page_job_offers() -> list:
     return nofluffjobs_list
 
 
+@st.cache
 def merge_dataframes():
 
     nofluffjobs_list = nofluffjobs_page_job_offers()
