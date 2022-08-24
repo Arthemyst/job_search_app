@@ -51,6 +51,8 @@ def bulldog_page_job_offers() -> list:
 
                 for link in links:
                     link_url = link["href"]
+                pattern = re.compile(r"https?://([\w.\.\-]+)")
+                website_name = pattern.match(link_url)
                 page_job_element = requests.get(link_url)
                 soup_page = BeautifulSoup(page_job_element.content, "html.parser")
                 publication_date_element = soup_page.find(
@@ -67,7 +69,9 @@ def bulldog_page_job_offers() -> list:
                 bulldog_dict["company"] = company_element.text.strip()
                 bulldog_dict["title"] = job_title_element.text.strip()
                 bulldog_dict["position"] = position_element.text.strip().capitalize()
+                bulldog_dict["website"] = website_name[0]
                 bulldog_dict["link_url"] = link_url
+
                 bulldog_list.append(bulldog_dict)
     return bulldog_list
 
@@ -102,8 +106,11 @@ def nofluffjobs_page_job_offers() -> list:
                 "Fullstack" not in job_title_element.text
                 and "DevOps" not in job_title_element.text
                 and "Golang" not in job_title_element.text
+                and "Test" not in job_title_element.text
             ):
-                link_url = "http://nofluffjobs.com" + job_element["href"]
+                link_url = "https://nofluffjobs.com" + job_element["href"]
+                pattern = re.compile(r"https?://([\w.\.\-]+)")
+                website_name = pattern.match(link_url)
                 page_job_element = requests.get(link_url)
                 soup_page = BeautifulSoup(page_job_element.content, "html.parser")
                 position = soup_page.find("span", class_="mr-10 font-weight-medium")
@@ -127,6 +134,7 @@ def nofluffjobs_page_job_offers() -> list:
                 nofluffjobs_dict["company"] = company_element.text.strip()
                 nofluffjobs_dict["title"] = job_title_element.text.strip()
                 nofluffjobs_dict["position"] = position.text.strip()
+                nofluffjobs_dict["website"] = website_name[0]
                 nofluffjobs_dict["link_url"] = link_url
 
                 nofluffjobs_list.append(nofluffjobs_dict)
