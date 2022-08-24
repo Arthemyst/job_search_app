@@ -27,11 +27,11 @@ last_day = df["publication_date"].min()
 last_date = datetime.datetime.strptime(last_day, "%Y-%m-%d")
 today = datetime.date.today()
 
-end_date = st.sidebar.date_input("The latest:", today)
-start_date = st.sidebar.date_input("The oldest:", last_date)
+end_date = st.sidebar.date_input("To:", today)
+start_date = st.sidebar.date_input("From:", last_date)
 
 # Filtering data
-if start_date < end_date:
+if start_date <= end_date:
     df_selected = df[
         (
             (df["position"].isin(selected_position))
