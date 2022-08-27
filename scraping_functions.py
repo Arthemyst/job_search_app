@@ -6,12 +6,14 @@ import requests
 import streamlit as st
 from bs4 import BeautifulSoup
 
+from constants import months
+
 
 def bulldog_page_job_offers() -> list:
 
     bulldog_list = list()
 
-    url = "https://bulldogjob.pl/companies/jobs/s/city,Warszawa,Wrocław,Remote/skills,Python/experienceLevel,junior"
+    url = "https://bulldogjob.pl/companies/jobs/s/city,Warszawa,Remote/skills,Python/experienceLevel,junior"
     flag = True
     try:
         page = requests.get(url)
@@ -141,6 +143,74 @@ def nofluffjobs_page_job_offers() -> list:
     return nofluffjobs_list
 
 
+def pracuj_page_job_offers() -> list:
+    pracuj_list = list()
+
+    url = "https://www.pracuj.pl/praca/python;kw/warszawa;wp?rd=30&et=1%2c17&tc=0%2c3%2c2&ws=0&wm=full-office%2chybrid%2chome-office"
+    flag = True
+    try:
+        page = requests.get(url)
+    except requests.exceptions.ConnectionError as err:
+        flag = False
+    if flag:
+        soup = BeautifulSoup(page.content, "html.parser")
+
+        for job_element in soup.find_all(
+            lambda tag: tag.name == "li"
+            and tag.get("class") == ["results__list-container-item"]
+        ):
+
+            pracuj_dict = dict()
+
+            link_element = job_element.select('div[class*="offer__info"]')
+            if len(link_element) != 0:
+                job_title_element = job_element.find(
+                    "a", class_="offer-details__title-link"
+                )
+                if (
+                    "Fullstack" not in job_title_element.text
+                    and "DevOps" not in job_title_element.text
+                    and "Golang" not in job_title_element.text
+                    and "Test" not in job_title_element.text
+                ):
+                    company_element = job_element.find("p", class_="offer-company")
+                    publication_date_element = job_element.find(
+                        "span", class_="offer-actions__date"
+                    )
+                    publication_date_text = publication_date_element.text.strip().split(
+                        " "
+                    )[1:]
+                    month_name = months[publication_date_text[1]]
+                    # change polish name of month to number ex. sierpnia to 8
+                    publication_date_text[1] = str(month_name)
+                    publication_date = "-".join(publication_date_text)
+                    publication_date = datetime.strptime(
+                        publication_date, "%d-%m-%Y"
+                    ).strftime("%Y-%m-%d")
+
+                    link_url = job_title_element["href"]
+                    link_pattern = re.compile(r"https?://([\w.\.\-]+)")
+                    website_name = link_pattern.match(link_url)
+                    page_job_element = requests.get(link_url)
+                    soup_page = BeautifulSoup(page_job_element.content, "html.parser")
+                    position = soup_page.select('li[class*="offer-view"]')
+                    if "unior" in str(position):
+                        position_pattern = "Junior"
+                    elif "rainee" in str(position) or "staż" in str(position):
+                        position_pattern = "Trainee"
+                    else:
+                        position_pattern = "no info"
+
+                    pracuj_dict["publication_date"] = publication_date
+                    pracuj_dict["company"] = company_element.text.strip()
+                    pracuj_dict["title"] = job_title_element.text.strip()
+                    pracuj_dict["position"] = position_pattern
+                    pracuj_dict["link_url"] = link_url
+                    pracuj_dict["website"] = website_name[0]
+                    pracuj_list.append(pracuj_dict)
+    return pracuj_list
+
+
 @st.cache
 def merge_dataframes():
 
@@ -152,7 +222,11 @@ def merge_dataframes():
     df_raw_2 = pd.DataFrame.from_records(bulldogjob_list)
     df_2 = df_raw_2.copy()
 
-    df_merged = pd.concat([df_1, df_2], axis=0, ignore_index=True)
+    pracuj_list = pracuj_page_job_offers()
+    df_raw_3 = pd.DataFrame.from_records(pracuj_list)
+    df_3 = df_raw_3.copy()
+
+    df_merged = pd.concat([df_1, df_2, df_3], axis=0, ignore_index=True)
     if len(df_merged) != 0:
 
         df_merged["publication_date"] = pd.to_datetime(
