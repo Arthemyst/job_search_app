@@ -5,7 +5,7 @@ import pandas as pd
 import requests
 import streamlit as st
 from bs4 import BeautifulSoup
-
+import numpy as np
 from constants import months
 
 
@@ -241,5 +241,9 @@ def merge_dataframes():
             "%Y-%m-%d"
         )
         df_merged.sort_values(["publication_date"], inplace=True, ascending=False)
-
+        df_merged.reset_index(drop=True, inplace=True)
+        df_merged = df_merged.rename(
+            columns={"publication_date": "publication date", "link_url": "url link"}
+        )
+        df_merged.index = np.arange(1, len(df_merged) + 1)
     return df_merged
