@@ -23,7 +23,7 @@ selected_website = st.sidebar.multiselect(
 
 # Sidebar - date range
 
-last_day = df["publication_date"].min()
+last_day = df["publication date"].min()
 last_date = datetime.datetime.strptime(last_day, "%Y-%m-%d")
 today = datetime.date.today()
 
@@ -36,8 +36,8 @@ if start_date <= end_date:
         (
             (df["position"].isin(selected_position))
             & (df["website"].isin(selected_website))
-            & (df["publication_date"] >= str(start_date))
-            & (df["publication_date"] <= str(end_date))
+            & (df["publication date"] >= str(start_date))
+            & (df["publication date"] <= str(end_date))
         )
     ]
     if len(df_selected) != 0:
