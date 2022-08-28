@@ -1,8 +1,9 @@
 import pytest
+import pandas as pd
 from scraping_functions import (
     bulldog_page_job_offers,
-    nofluffjobs_page_job_offers,
     merge_dataframes,
+    nofluffjobs_page_job_offers,
     pracuj_page_job_offers,
 )
 
@@ -73,4 +74,21 @@ def test_bulldogjob_dict_result_keys():
         "position",
         "website",
         "link_url",
+    ]
+
+
+def test_merge_dataframes_rows_not_equal_zero():
+    df_merged = merge_dataframes()
+    assert len(df_merged) != 0
+
+
+def test_merge_dataframes_good_columns_names():
+    df_merged = merge_dataframes()
+    assert list(df_merged.columns) == [
+        "publication date",
+        "company",
+        "title",
+        "position",
+        "website",
+        "url link",
     ]
