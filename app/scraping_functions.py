@@ -7,7 +7,7 @@ import requests
 import streamlit as st
 from bs4 import BeautifulSoup
 
-from app.constants import months
+from constants import months
 
 
 def bulldog_page_job_offers(
