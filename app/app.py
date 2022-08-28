@@ -2,7 +2,7 @@ import datetime
 
 import streamlit as st
 
-import app.scraping_functions as sf
+import scraping_functions as sf
 
 
 st.title("Job offers:")
