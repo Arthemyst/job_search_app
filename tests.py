@@ -1,0 +1,76 @@
+import pytest
+from scraping_functions import (
+    bulldog_page_job_offers,
+    nofluffjobs_page_job_offers,
+    merge_dataframes,
+    pracuj_page_job_offers,
+)
+
+
+def test_nofluffjobs_wrong_url():
+    url = "www.wrongpage.pl"
+    nofluffjobs_empty_list = nofluffjobs_page_job_offers(url)
+    assert len(nofluffjobs_empty_list) == 0
+
+
+def test_nofluffjobs_good_url():
+    nofluffjobs_list = nofluffjobs_page_job_offers()
+    assert len(nofluffjobs_list) != 0
+
+
+def test_bulldogjob_wrong_url():
+    url = "www.wrongpage.pl"
+    bulldogjob_empty_list = bulldog_page_job_offers(url)
+    assert len(bulldogjob_empty_list) == 0
+
+
+def test_bulldogjob_good_url():
+    bulldogjob_list = bulldog_page_job_offers()
+    assert len(bulldogjob_list) != 0
+
+
+def test_pracuj_wrong_url():
+    url = "www.wrongpage.pl"
+    pracuj_empty_list = pracuj_page_job_offers(url)
+    assert len(pracuj_empty_list) == 0
+
+
+def test_pracuj_good_url():
+    pracuj_list = pracuj_page_job_offers()
+    assert len(pracuj_list) != 0
+
+
+def test_pracuj_dict_result_keys():
+    pracuj_list = pracuj_page_job_offers()
+    assert list(pracuj_list[0].keys()) == [
+        "publication_date",
+        "company",
+        "title",
+        "position",
+        "website",
+        "link_url",
+    ]
+
+
+def test_nofluffjobs_dict_result_keys():
+    nofluffjobs_list = nofluffjobs_page_job_offers()
+    assert list(nofluffjobs_list[0].keys()) == [
+        "publication_date",
+        "company",
+        "title",
+        "position",
+        "website",
+        "link_url",
+    ]
+
+
+def test_bulldogjob_dict_result_keys():
+    bulldogjob_list = bulldog_page_job_offers()
+    assert list(bulldogjob_list[0].keys()) == [
+        "publication_date",
+        "company",
+        "title",
+        "position",
+        "website",
+        "link_url",
+    ]
