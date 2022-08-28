@@ -1,6 +1,6 @@
 import pytest
 import pandas as pd
-from scraping_functions import (
+from app.scraping_functions import (
     bulldog_page_job_offers,
     merge_dataframes,
     nofluffjobs_page_job_offers,
