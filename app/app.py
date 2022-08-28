@@ -2,7 +2,8 @@ import datetime
 
 import streamlit as st
 
-import scraping_functions as sf
+import app.scraping_functions as sf
+
 
 st.title("Job offers:")
 df = sf.merge_dataframes()
@@ -42,6 +43,6 @@ if start_date <= end_date:
     if len(df_selected) != 0:
         st.dataframe(df_selected)
     else:
-        st.write("Change filters parameters to show results.")
+        st.write("Change filters parameters to show results!")
 else:
     st.write("End date must fall after start date.")
