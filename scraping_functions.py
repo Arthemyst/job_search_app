@@ -9,15 +9,18 @@ import numpy as np
 from constants import months
 
 
-def bulldog_page_job_offers() -> list:
+def bulldog_page_job_offers(
+    url="https://bulldogjob.pl/companies/jobs/s/city,Warszawa,Remote/skills,Python/experienceLevel,junior",
+) -> list:
 
     bulldog_list = list()
 
-    url = "https://bulldogjob.pl/companies/jobs/s/city,Warszawa,Remote/skills,Python/experienceLevel,junior"
     flag = True
     try:
         page = requests.get(url)
     except requests.exceptions.ConnectionError as err:
+        flag = False
+    except requests.exceptions.MissingSchema as err:
         flag = False
     if flag:
         page = requests.get(url)
@@ -78,16 +81,18 @@ def bulldog_page_job_offers() -> list:
     return bulldog_list
 
 
-def nofluffjobs_page_job_offers() -> list:
+def nofluffjobs_page_job_offers(
+    url="https://nofluffjobs.com/pl/praca-zdalna/python?criteria=city%3Dwarszawa%20seniority%3Dtrainee,junior%20%20salary<pln12000m&page=1",
+) -> list:
 
     nofluffjobs_list = list()
-
-    url = "https://nofluffjobs.com/pl/praca-zdalna/python?criteria=city%3Dwarszawa%20seniority%3Dtrainee,junior%20%20salary<pln12000m&page=1"
 
     flag = True
     try:
         page = requests.get(url)
     except requests.exceptions.ConnectionError as err:
+        flag = False
+    except requests.exceptions.MissingSchema as err:
         flag = False
     if flag:
         soup = BeautifulSoup(page.content, "html.parser")
@@ -143,14 +148,17 @@ def nofluffjobs_page_job_offers() -> list:
     return nofluffjobs_list
 
 
-def pracuj_page_job_offers() -> list:
+def pracuj_page_job_offers(
+    url="https://www.pracuj.pl/praca/python;kw/warszawa;wp?rd=30&et=1%2c17&tc=0%2c3%2c2&ws=0&wm=full-office%2chybrid%2chome-office",
+) -> list:
     pracuj_list = list()
 
-    url = "https://www.pracuj.pl/praca/python;kw/warszawa;wp?rd=30&et=1%2c17&tc=0%2c3%2c2&ws=0&wm=full-office%2chybrid%2chome-office"
     flag = True
     try:
         page = requests.get(url)
     except requests.exceptions.ConnectionError as err:
+        flag = False
+    except requests.exceptions.MissingSchema as err:
         flag = False
     if flag:
         soup = BeautifulSoup(page.content, "html.parser")
@@ -205,8 +213,8 @@ def pracuj_page_job_offers() -> list:
                     pracuj_dict["company"] = company_element.text.strip()
                     pracuj_dict["title"] = job_title_element.text.strip()
                     pracuj_dict["position"] = position_pattern
-                    pracuj_dict["link_url"] = link_url
                     pracuj_dict["website"] = website_name[0]
+                    pracuj_dict["link_url"] = link_url
                     pracuj_list.append(pracuj_dict)
     return pracuj_list
 
