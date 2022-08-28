@@ -26,5 +26,6 @@ To run tests:
 
 Application runs in terminal. Please run app by streamlit:
 ```sh
-$ streamlit run app.py
+(env)$ cd app
+(env)$ streamlit run app.py
 ```
