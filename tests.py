@@ -15,7 +15,8 @@ def test_nofluffjobs_wrong_url():
 
 
 def test_nofluffjobs_good_url():
-    nofluffjobs_list = nofluffjobs_page_job_offers()
+    url = "https://nofluffjobs.com/pl/praca-zdalna/python?criteria=city%3Dwarszawa%20seniority%3Dtrainee,junior%20%20salary>pln15000m&page=1"
+    nofluffjobs_list = nofluffjobs_page_job_offers(url)
     assert len(nofluffjobs_list) != 0
 
 
