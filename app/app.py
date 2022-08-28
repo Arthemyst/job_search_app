@@ -4,7 +4,6 @@ import streamlit as st
 
 import scraping_functions as sf
 
-
 st.title("Job offers:")
 df = sf.merge_dataframes()
 
