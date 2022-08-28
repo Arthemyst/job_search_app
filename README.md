@@ -18,6 +18,12 @@ $ python3 -m venv env
 $ source env/bin/activate
 ```
 
+To run tests:
+
+```sh
+(env)$ python3 -m pytest app/tests/tests_scraping_functions.py
+```
+
 Application runs in terminal. Please run app by streamlit:
 ```sh
 $ streamlit run app.py
