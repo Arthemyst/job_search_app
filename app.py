@@ -45,4 +45,4 @@ if start_date <= end_date:
     else:
         st.write("Change filters parameters to show results.")
 else:
-    st.write("Error: End date must fall after start date.")
+    st.write("End date must fall after start date.")
