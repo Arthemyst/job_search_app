@@ -7,7 +7,7 @@ import requests
 import streamlit as st
 from bs4 import BeautifulSoup
 
-from constants import months
+from constants import constants
 
 
 def bulldog_page_job_offers(
@@ -164,10 +164,7 @@ def pracuj_page_job_offers(
     if flag:
         soup = BeautifulSoup(page.content, "html.parser")
 
-        for job_element in soup.find_all(
-            lambda tag: tag.name == "li"
-            and tag.get("class") == ["results__list-container-item"]
-        ):
+        for job_element in soup.select('li[class*="results__list-container-item"]'):
 
             pracuj_dict = dict()
 
@@ -189,7 +186,7 @@ def pracuj_page_job_offers(
                     publication_date_text = publication_date_element.text.strip().split(
                         " "
                     )[1:]
-                    month_name = months[publication_date_text[1]]
+                    month_name = constants.months[publication_date_text[1]]
                     # change polish name of month to number ex. sierpnia to 8
                     publication_date_text[1] = str(month_name)
                     publication_date = "-".join(publication_date_text)
