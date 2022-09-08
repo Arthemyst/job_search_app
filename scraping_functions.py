@@ -33,53 +33,60 @@ def bulldog_page_job_offers(
         )
 
         for job_element in job_elements:
-            bulldog_dict = dict()
-            job_title_element = job_element.find(
-                "h3", class_="text-c28 font-medium mb-3 w-full md:hidden"
-            )
-            if (
-                "Fullstack" not in job_title_element.text
-                and "DevOps" not in job_title_element.text
-                and "Test" not in job_title_element.text
-            ):
-                position_element = job_element.find(
-                    "p", class_="tracking-05 uppercase md:my-4"
-                )
-
-                company_element = job_element.find(
-                    "p",
-                    class_="text-sm md:text-xxs md:text-center my-2 font-medium text-gray-300",
-                )
-
-                links = job_element.find(
-                    "h3", class_="text-c28 font-medium mb-3 w-full md:hidden"
-                )
-
-                for link in links:
-                    link_url = link["href"]
-                pattern = re.compile(r"https?://([\w.\.\-]+)")
-                website_name = pattern.match(link_url)
-                page_job_element = requests.get(link_url)
-                soup_page = BeautifulSoup(page_job_element.content, "html.parser")
-                publication_date_element = soup_page.find(
-                    "p", class_="text-gray-300 text-xs xl:text-sm mb-0.5"
-                )
-                days_after_publication = int(
-                    re.findall(r"\b\d+\b", publication_date_element.text.strip())[0]
-                )
-                publication_date = (
-                    datetime.today() - (timedelta(days=days_after_publication))
-                ).strftime("%Y-%m-%d")
-
-                bulldog_dict["publication_date"] = publication_date
-                bulldog_dict["company"] = company_element.text.strip()
-                bulldog_dict["title"] = job_title_element.text.strip()
-                bulldog_dict["position"] = position_element.text.strip().capitalize()
-                bulldog_dict["website"] = website_name[0]
-                bulldog_dict["link_url"] = link_url
-
-                bulldog_list.append(bulldog_dict)
+            publication_date, company, job_title, position, website_name, link_url = get_bulldog_job_details(job_element)
+            bulldog_dict = dict_creator(publication_date, company, job_title, position, website_name, link_url)
+            bulldog_list.append(bulldog_dict)
     return bulldog_list
+
+def get_bulldog_job_details(job_element): 
+    job_title_element = job_element.find(
+        "h3", class_="text-c28 font-medium mb-3 w-full md:hidden"
+    )
+    job_title = job_title_element.text.strip()
+
+    position_element = job_element.find("p", class_="tracking-05 uppercase md:my-4")
+    position = position_element.text.strip().capitalize()
+
+    company_element = job_element.find(
+        "p",
+        class_="text-sm md:text-xxs md:text-center my-2 font-medium text-gray-300",
+    )
+    company = company_element.text.strip()
+
+    links = job_element.find(
+        "h3", class_="text-c28 font-medium mb-3 w-full md:hidden"
+    )
+
+    for link in links:
+        link_url = link["href"]
+    pattern = re.compile(r"https?://([\w.\.\-]+)")
+    website_name = pattern.match(link_url)[0]
+    page_job_element = requests.get(link_url)
+    soup_page = BeautifulSoup(page_job_element.content, "html.parser")
+    publication_date_element = soup_page.find(
+        "p", class_="text-gray-300 text-xs xl:text-sm mb-0.5"
+    )
+    days_after_publication = int(
+        re.findall(r"\b\d+\b", publication_date_element.text.strip())[0]
+    )
+    publication_date = (
+        datetime.today() - (timedelta(days=days_after_publication))
+    ).strftime("%Y-%m-%d")
+
+
+    return (publication_date, company, job_title, position, website_name, link_url)
+
+
+def dict_creator(publication_date, company, job_title, position, website_name, link_url):
+    offers_dict = dict()
+    offers_dict["publication_date"] = publication_date
+    offers_dict["company"] = company
+    offers_dict["title"] = job_title
+    offers_dict["position"] = position
+    offers_dict["website"] = website_name
+    offers_dict["link_url"] = link_url
+
+    return offers_dict
 
 
 def nofluffjobs_page_job_offers(
