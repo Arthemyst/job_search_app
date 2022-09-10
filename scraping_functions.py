@@ -27,10 +27,7 @@ def bulldog_page_job_offers(
         page = requests.get(url)
         soup = BeautifulSoup(page.content, "html.parser")
         results = soup.find(id="__next")
-        job_elements = results.find_all(
-            "div",
-            class_="py-6 md:py-8 px-8 flex flex-wrap relative bg-white mb-2 rounded-lg shadow",
-        )
+        job_elements = results.find_all("div", class_="py-6 md:py-8 px-8 flex flex-wrap relative bg-white mb-2 rounded-lg shadow")
 
         for job_element in job_elements:
             publication_date, company, job_title, position, website_name, link_url = get_bulldog_job_details(job_element)
@@ -39,9 +36,7 @@ def bulldog_page_job_offers(
     return bulldog_list
 
 def get_bulldog_job_details(job_element): 
-    job_title_element = job_element.find(
-        "h3", class_="text-c28 font-medium mb-3 w-full md:hidden"
-    )
+    job_title_element = job_element.find("h3", class_="text-c28 font-medium mb-3 w-full md:hidden")
     job_title = job_title_element.text.strip()
 
     position_element = job_element.find("p", class_="tracking-05 uppercase md:my-4")
@@ -76,6 +71,40 @@ def get_bulldog_job_details(job_element):
 
     return (publication_date, company, job_title, position, website_name, link_url)
 
+def get_nofluffjobs_job_details(job_element): 
+    company_element = job_element.find(
+        "span", class_="d-block posting-title__company text-truncate"
+    )
+    company = company_element.text.strip()
+    job_title_element = job_element.find(
+        "h3",
+        class_="posting-title__position text-truncate color-main ng-star-inserted",
+    )
+    job_title = job_title_element.text.strip()
+
+    link_url = "https://nofluffjobs.com" + job_element["href"]
+    pattern = re.compile(r"https?://([\w.\.\-]+)")
+    website_name = pattern.match(link_url)[0]
+    page_job_element = requests.get(link_url)
+    soup_page = BeautifulSoup(page_job_element.content, "html.parser")
+    position = soup_page.find("span", class_="mr-10 font-weight-medium").text.strip()
+    publication_date_element = soup_page.find(
+        "div", class_="posting-time-row"
+    )
+
+    days_after_publication = re.findall(
+        r"\b\d+\b", publication_date_element.text.strip()
+    )
+    if len(days_after_publication) == 0:
+        publication_date = datetime.today().strftime("%Y-%m-%d")
+
+    else:
+        publication_date = (
+            datetime.today()
+            - (timedelta(days=int(days_after_publication[0])))
+        ).strftime("%Y-%m-%d")    
+
+    return (publication_date, company, job_title, position, website_name, link_url)
 
 def dict_creator(publication_date, company, job_title, position, website_name, link_url):
     offers_dict = dict()
@@ -104,55 +133,14 @@ def nofluffjobs_page_job_offers(
         flag = False
     if flag:
         soup = BeautifulSoup(page.content, "html.parser")
-
-        for job_element in soup.select(
+        job_elements = soup.select(
             'a[class*="posting-list-item posting-list-item--"]'
-        ):
+        )
+        for job_element in job_elements:
 
-            nofluffjobs_dict = dict()
-            company_element = job_element.find(
-                "span", class_="d-block posting-title__company text-truncate"
-            )
-            job_title_element = job_element.find(
-                "h3",
-                class_="posting-title__position text-truncate color-main ng-star-inserted",
-            )
-            if (
-                "Fullstack" not in job_title_element.text
-                and "DevOps" not in job_title_element.text
-                and "Golang" not in job_title_element.text
-                and "Test" not in job_title_element.text
-            ):
-                link_url = "https://nofluffjobs.com" + job_element["href"]
-                pattern = re.compile(r"https?://([\w.\.\-]+)")
-                website_name = pattern.match(link_url)
-                page_job_element = requests.get(link_url)
-                soup_page = BeautifulSoup(page_job_element.content, "html.parser")
-                position = soup_page.find("span", class_="mr-10 font-weight-medium")
-                publication_date_element = soup_page.find(
-                    "div", class_="posting-time-row"
-                )
-
-                days_after_publication = re.findall(
-                    r"\b\d+\b", publication_date_element.text.strip()
-                )
-                if len(days_after_publication) == 0:
-                    publication_date = datetime.today().strftime("%Y-%m-%d")
-
-                else:
-                    publication_date = (
-                        datetime.today()
-                        - (timedelta(days=int(days_after_publication[0])))
-                    ).strftime("%Y-%m-%d")
-
-                nofluffjobs_dict["publication_date"] = publication_date
-                nofluffjobs_dict["company"] = company_element.text.strip()
-                nofluffjobs_dict["title"] = job_title_element.text.strip()
-                nofluffjobs_dict["position"] = position.text.strip()
-                nofluffjobs_dict["website"] = website_name[0]
-                nofluffjobs_dict["link_url"] = link_url
-
-                nofluffjobs_list.append(nofluffjobs_dict)
+            publication_date, company, job_title, position, website_name, link_url = get_nofluffjobs_job_details(job_element)
+            nofluffjobs_dict = dict_creator(publication_date, company, job_title, position, website_name, link_url)
+            nofluffjobs_list.append(nofluffjobs_dict)
     return nofluffjobs_list
 
 
