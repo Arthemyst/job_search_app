@@ -27,16 +27,31 @@ def bulldog_page_job_offers(
         page = requests.get(url)
         soup = BeautifulSoup(page.content, "html.parser")
         results = soup.find(id="__next")
-        job_elements = results.find_all("div", class_="py-6 md:py-8 px-8 flex flex-wrap relative bg-white mb-2 rounded-lg shadow")
+        job_elements = results.find_all(
+            "div",
+            class_="py-6 md:py-8 px-8 flex flex-wrap relative bg-white mb-2 rounded-lg shadow",
+        )
 
         for job_element in job_elements:
-            publication_date, company, job_title, position, website_name, link_url = get_bulldog_job_details(job_element)
-            bulldog_dict = dict_creator(publication_date, company, job_title, position, website_name, link_url)
+            (
+                publication_date,
+                company,
+                job_title,
+                position,
+                website_name,
+                link_url,
+            ) = get_bulldog_job_details(job_element)
+            bulldog_dict = dict_creator(
+                publication_date, company, job_title, position, website_name, link_url
+            )
             bulldog_list.append(bulldog_dict)
     return bulldog_list
 
-def get_bulldog_job_details(job_element): 
-    job_title_element = job_element.find("h3", class_="text-c28 font-medium mb-3 w-full md:hidden")
+
+def get_bulldog_job_details(job_element):
+    job_title_element = job_element.find(
+        "h3", class_="text-c28 font-medium mb-3 w-full md:hidden"
+    )
     job_title = job_title_element.text.strip()
 
     position_element = job_element.find("p", class_="tracking-05 uppercase md:my-4")
@@ -48,9 +63,7 @@ def get_bulldog_job_details(job_element):
     )
     company = company_element.text.strip()
 
-    links = job_element.find(
-        "h3", class_="text-c28 font-medium mb-3 w-full md:hidden"
-    )
+    links = job_element.find("h3", class_="text-c28 font-medium mb-3 w-full md:hidden")
 
     for link in links:
         link_url = link["href"]
@@ -68,10 +81,10 @@ def get_bulldog_job_details(job_element):
         datetime.today() - (timedelta(days=days_after_publication))
     ).strftime("%Y-%m-%d")
 
-
     return (publication_date, company, job_title, position, website_name, link_url)
 
-def get_nofluffjobs_job_details(job_element): 
+
+def get_nofluffjobs_job_details(job_element):
     company_element = job_element.find(
         "span", class_="d-block posting-title__company text-truncate"
     )
@@ -88,9 +101,7 @@ def get_nofluffjobs_job_details(job_element):
     page_job_element = requests.get(link_url)
     soup_page = BeautifulSoup(page_job_element.content, "html.parser")
     position = soup_page.find("span", class_="mr-10 font-weight-medium").text.strip()
-    publication_date_element = soup_page.find(
-        "div", class_="posting-time-row"
-    )
+    publication_date_element = soup_page.find("div", class_="posting-time-row")
 
     days_after_publication = re.findall(
         r"\b\d+\b", publication_date_element.text.strip()
@@ -100,13 +111,15 @@ def get_nofluffjobs_job_details(job_element):
 
     else:
         publication_date = (
-            datetime.today()
-            - (timedelta(days=int(days_after_publication[0])))
-        ).strftime("%Y-%m-%d")    
+            datetime.today() - (timedelta(days=int(days_after_publication[0])))
+        ).strftime("%Y-%m-%d")
 
     return (publication_date, company, job_title, position, website_name, link_url)
 
-def dict_creator(publication_date, company, job_title, position, website_name, link_url):
+
+def dict_creator(
+    publication_date, company, job_title, position, website_name, link_url
+):
     offers_dict = dict()
     offers_dict["publication_date"] = publication_date
     offers_dict["company"] = company
@@ -133,13 +146,20 @@ def nofluffjobs_page_job_offers(
         flag = False
     if flag:
         soup = BeautifulSoup(page.content, "html.parser")
-        job_elements = soup.select(
-            'a[class*="posting-list-item posting-list-item--"]'
-        )
+        job_elements = soup.select('a[class*="posting-list-item posting-list-item--"]')
         for job_element in job_elements:
 
-            publication_date, company, job_title, position, website_name, link_url = get_nofluffjobs_job_details(job_element)
-            nofluffjobs_dict = dict_creator(publication_date, company, job_title, position, website_name, link_url)
+            (
+                publication_date,
+                company,
+                job_title,
+                position,
+                website_name,
+                link_url,
+            ) = get_nofluffjobs_job_details(job_element)
+            nofluffjobs_dict = dict_creator(
+                publication_date, company, job_title, position, website_name, link_url
+            )
             nofluffjobs_list.append(nofluffjobs_dict)
     return nofluffjobs_list
 
