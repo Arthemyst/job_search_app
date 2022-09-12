@@ -178,58 +178,54 @@ def pracuj_page_job_offers(
         flag = False
     if flag:
         soup = BeautifulSoup(page.content, "html.parser")
+        job_elements = soup.select('li[class*="results__list-container-item"]')
+        for job_element in job_elements:
+            publication_date, company, job_title, position, website_name, link_url = get_pracuj_job_details(job_element)
+            pracuj_dict = dict_creator(
+                publication_date, company, job_title, position, website_name, link_url
+            )
+            pracuj_list.append(pracuj_dict)
+        return pracuj_list
 
-        for job_element in soup.select('li[class*="results__list-container-item"]'):
 
-            pracuj_dict = dict()
+def get_pracuj_job_details(job_element):
+    link_element = job_element.select('div[class*="offer__info"]')
+    if len(link_element) != 0:
+        job_title_element = job_element.find(
+            "a", class_="offer-details__title-link"
+        )
+        job_title = job_title_element.text.strip()
 
-            link_element = job_element.select('div[class*="offer__info"]')
-            if len(link_element) != 0:
-                job_title_element = job_element.find(
-                    "a", class_="offer-details__title-link"
-                )
-                if (
-                    "Fullstack" not in job_title_element.text
-                    and "DevOps" not in job_title_element.text
-                    and "Golang" not in job_title_element.text
-                    and "Test" not in job_title_element.text
-                ):
-                    company_element = job_element.find("p", class_="offer-company")
-                    publication_date_element = job_element.find(
-                        "span", class_="offer-actions__date"
-                    )
-                    publication_date_text = publication_date_element.text.strip().split(
-                        " "
-                    )[1:]
-                    month_name = constants.months[publication_date_text[1]]
-                    # change polish name of month to number ex. sierpnia to 8
-                    publication_date_text[1] = str(month_name)
-                    publication_date = "-".join(publication_date_text)
-                    publication_date = datetime.strptime(
-                        publication_date, "%d-%m-%Y"
-                    ).strftime("%Y-%m-%d")
+        company_element = job_element.find("p", class_="offer-company")
+        company = company_element.text.strip()
+        publication_date_element = job_element.find(
+            "span", class_="offer-actions__date"
+        )
+        publication_date_text = publication_date_element.text.strip().split(
+            " "
+        )[1:]
+        month_name = constants.months[publication_date_text[1]]
+        # change polish name of month to number ex. sierpnia to 8
+        publication_date_text[1] = str(month_name)
+        publication_date = "-".join(publication_date_text)
+        publication_date = datetime.strptime(
+            publication_date, "%d-%m-%Y"
+        ).strftime("%Y-%m-%d")
 
-                    link_url = job_title_element["href"]
-                    link_pattern = re.compile(r"https?://([\w.\.\-]+)")
-                    website_name = link_pattern.match(link_url)
-                    page_job_element = requests.get(link_url)
-                    soup_page = BeautifulSoup(page_job_element.content, "html.parser")
-                    position = soup_page.select('li[class*="offer-view"]')
-                    if "unior" in str(position):
-                        position_pattern = "Junior"
-                    elif "rainee" in str(position) or "staż" in str(position):
-                        position_pattern = "Trainee"
-                    else:
-                        position_pattern = "no info"
+        link_url = job_title_element["href"]
+        link_pattern = re.compile(r"https?://([\w.\.\-]+)")
+        website_name = link_pattern.match(link_url)[0]
+        page_job_element = requests.get(link_url)
+        soup_page = BeautifulSoup(page_job_element.content, "html.parser")
+        position_element = soup_page.select('li[class*="offer-view"]')
+        if "unior" in str(position_element):
+            position = "Junior"
+        elif "rainee" in str(position_element) or "staż" in str(position_element):
+            position = "Trainee"
+        else:
+            position = "no info"
 
-                    pracuj_dict["publication_date"] = publication_date
-                    pracuj_dict["company"] = company_element.text.strip()
-                    pracuj_dict["title"] = job_title_element.text.strip()
-                    pracuj_dict["position"] = position_pattern
-                    pracuj_dict["website"] = website_name[0]
-                    pracuj_dict["link_url"] = link_url
-                    pracuj_list.append(pracuj_dict)
-    return pracuj_list
+        return (publication_date, company, job_title, position, website_name, link_url)
 
 
 @st.cache
