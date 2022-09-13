@@ -185,7 +185,7 @@ def pracuj_page_job_offers(
                 publication_date, company, job_title, position, website_name, link_url
             )
             pracuj_list.append(pracuj_dict)
-        return pracuj_list
+    return pracuj_list
 
 
 def get_pracuj_job_details(job_element):
@@ -224,8 +224,14 @@ def get_pracuj_job_details(job_element):
             position = "Trainee"
         else:
             position = "no info"
-
-        return (publication_date, company, job_title, position, website_name, link_url)
+    else:
+        publication_date = np.nan
+        company = np.nan
+        job_title = np.nan
+        position = np.nan
+        website_name = np.nan
+        link_url = np.nan
+    return (publication_date, company, job_title, position, website_name, link_url)
 
 
 @st.cache
@@ -262,5 +268,6 @@ def merge_dataframes():
         df_merged = df_merged.rename(
             columns={"publication_date": "publication date", "link_url": "url link"}
         )
+        df_merged.dropna(inplace=True)
         df_merged.index = np.arange(1, len(df_merged) + 1)
     return df_merged
