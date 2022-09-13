@@ -1,5 +1,9 @@
 # job_search_app
 Application to track python job offers by web scraping
+Websites:
+- nofluffjobs.com
+- pracuj.pl
+- bulldogjob.pl
 
 ## Website visualization
 ![image](https://user-images.githubusercontent.com/59807704/189936914-1d84260b-87aa-45b6-b59a-239fe877edb5.png)
