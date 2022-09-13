@@ -43,6 +43,13 @@ if start_date <= end_date:
     ]
     if len(df_selected) != 0:
         st.dataframe(df_selected)
+
+        st.download_button(
+            label="Download data as CSV",
+            data=df_selected.to_csv().encode("utf-8"),
+            file_name="offers.csv",
+            mime="text/csv",
+        )
         fig1 = make_subplots(
             rows=1,
             cols=2,
