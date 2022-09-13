@@ -21,6 +21,11 @@ $ python3 -m venv env
 $ source env/bin/activate
 ```
 
+Then install the dependencies:
+```sh
+(env)$ pip install -r requirements-dev.txt
+```
+
 To run tests:
 
 ```sh
