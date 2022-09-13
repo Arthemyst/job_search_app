@@ -45,7 +45,7 @@ if start_date <= end_date:
     ]
     if len(df_selected) != 0:
         st.dataframe(df_selected)
-        fig = make_subplots(
+        fig1 = make_subplots(
             rows=1,
             cols=2,
             subplot_titles=(
@@ -55,7 +55,7 @@ if start_date <= end_date:
         )
         df_selected_count_by_website = df_selected.groupby("website").count()
         df_selected_count_by_position = df_selected.groupby("position").count()
-        fig.add_trace(
+        fig1.add_trace(
             go.Bar(
                 x=df_selected_count_by_website.index,
                 y=df_selected_count_by_website["company"],
@@ -65,7 +65,7 @@ if start_date <= end_date:
             row=1,
             col=1,
         )
-        fig.add_trace(
+        fig1.add_trace(
             go.Bar(
                 x=df_selected_count_by_position.index,
                 y=df_selected_count_by_position["company"],
@@ -76,12 +76,24 @@ if start_date <= end_date:
             col=2,
         )
         # Update yaxis properties
-        fig.update_yaxes(title_text="Count", row=1, col=1)
-        fig.update_yaxes(title_text="Count", row=1, col=2)
-        fig.update_layout(
+        fig1.update_yaxes(title_text="Count", row=1, col=1)
+        fig1.update_yaxes(title_text="Count", row=1, col=2)
+        fig1.update_layout(
             legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig1, use_container_width=True)
+
+        df_selected_count_by_date = df.groupby("publication date").count()
+
+        fig2 = px.line(
+            y=df_selected_count_by_date.company,
+            x=df_selected_count_by_date.index,
+            markers=True,
+            title="Count of offers by publication date.",
+        )
+        fig2.update_yaxes(title_text="Count of offers")
+        fig2.update_xaxes(title_text="Publication date")
+        st.plotly_chart(fig2, use_container_width=True)
 
     else:
         st.write("Change filters parameters to show results!")
