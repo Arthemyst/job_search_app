@@ -58,9 +58,10 @@ if start_date <= end_date:
         fig1.add_trace(
             go.Bar(
                 x=df_selected_count_by_website.index,
-                y=df_selected_count_by_website["company"],
+                y=df_selected_count_by_website.company,
                 name="website",
                 showlegend=False,
+                text=df_selected_count_by_website.company,
             ),
             row=1,
             col=1,
@@ -68,9 +69,10 @@ if start_date <= end_date:
         fig1.add_trace(
             go.Bar(
                 x=df_selected_count_by_position.index,
-                y=df_selected_count_by_position["company"],
+                y=df_selected_count_by_position.company,
                 name="position",
                 showlegend=False,
+                text=df_selected_count_by_position.company,
             ),
             row=1,
             col=2,
@@ -83,16 +85,20 @@ if start_date <= end_date:
         )
         st.plotly_chart(fig1, use_container_width=True)
 
-        df_selected_count_by_date = df.groupby("publication date").count()
+        df_selected_count_by_date = df_selected.groupby(["publication date"]).agg(
+            "count"
+        )
 
         fig2 = px.line(
             y=df_selected_count_by_date.company,
             x=df_selected_count_by_date.index,
             markers=True,
+            text=df_selected_count_by_date.company,
             title="Count of offers by publication date.",
         )
         fig2.update_yaxes(title_text="Count of offers")
         fig2.update_xaxes(title_text="Publication date")
+        fig2.update_traces(textposition="top left")
         st.plotly_chart(fig2, use_container_width=True)
 
     else:
