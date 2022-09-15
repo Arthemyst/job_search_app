@@ -8,7 +8,8 @@ Streamlit app gives possibility to filter offers by job position (junior, traine
 User can download filtered offers as csv file.
 
 ## Website visualization
-![image](https://user-images.githubusercontent.com/59807704/189936914-1d84260b-87aa-45b6-b59a-239fe877edb5.png)
+![image](https://user-images.githubusercontent.com/59807704/190413805-b8ce6464-24c0-4630-b475-d299b76cc9f6.png)
+
 
 ## Setup
 The first thing to do is to clone the repository:
