@@ -9,6 +9,7 @@ User can download filtered offers as csv file.
 
 ## Website visualization
 ![image](https://user-images.githubusercontent.com/59807704/190413805-b8ce6464-24c0-4630-b475-d299b76cc9f6.png)
+![image](https://user-images.githubusercontent.com/59807704/190413956-0fde46c9-6e02-4272-b23b-56eceed08105.png)
 
 
 ## Setup
