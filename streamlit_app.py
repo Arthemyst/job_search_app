@@ -15,7 +15,7 @@ if st.button("Update offers data"):
     df = sf.merge_dataframes()
     PL = pytz.timezone("Europe/Warsaw")
     load_datetime = datetime.now().astimezone(PL).strftime("%m/%d/%Y, %H:%M:%S")
-    st.write(f"Update time: {load_datetime}")
+    st.write(f"Update time: {load_datetime} CEST")
 # Sidebar - Position selection
 sorted_position_unique = sorted(df["position"].unique())
 selected_position = st.sidebar.multiselect(
