@@ -4,8 +4,13 @@ Application to track python job offers by web scraping from websites:
 - pracuj.pl
 - bulldogjob.pl
 
+Streamlit app gives possibility to filter offers by job position (junior, trainee), website or publication date.
+User can download filtered offers as csv file.
+
 ## Website visualization
-![image](https://user-images.githubusercontent.com/59807704/189936914-1d84260b-87aa-45b6-b59a-239fe877edb5.png)
+![image](https://user-images.githubusercontent.com/59807704/190414478-3f6bf2dd-f9cc-456b-aa62-912b0dc2fc02.png)
+![image](https://user-images.githubusercontent.com/59807704/190413956-0fde46c9-6e02-4272-b23b-56eceed08105.png)
+
 
 ## Setup
 The first thing to do is to clone the repository:
