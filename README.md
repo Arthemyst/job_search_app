@@ -10,7 +10,7 @@ Added button to upload current offers details.
 
 ## Website visualization
 ![image](https://user-images.githubusercontent.com/59807704/190631081-6735d007-8f9d-42d1-b7fc-ef604f27e1f3.png)
-![image](https://user-images.githubusercontent.com/59807704/190413956-0fde46c9-6e02-4272-b23b-56eceed08105.png)
+![image](https://user-images.githubusercontent.com/59807704/190631271-c3dca8d3-2963-413b-90d9-637d0de307e0.png)
 
 
 ## Setup
