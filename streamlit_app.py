@@ -7,11 +7,11 @@ from plotly.subplots import make_subplots
 import scraping_functions as sf
 from datetime import datetime, timezone, date
 import pytz
-from tzlocal import get_localzone
 
 st.title("Job offers:")
 df = sf.merge_dataframes()
 if st.button("Update offers data"):
+    st.legacy_caching.clear_cache()
     df = sf.merge_dataframes()
     PL = pytz.timezone("Europe/Warsaw")
     load_datetime = datetime.now().astimezone(PL).strftime("%m/%d/%Y, %H:%M:%S")
