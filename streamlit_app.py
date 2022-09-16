@@ -54,8 +54,8 @@ if start_date <= end_date:
             mime="text/csv",
         )
         fig1 = make_subplots(
-            rows=1,
-            cols=2,
+            rows=2,
+            cols=1,
             subplot_titles=(
                 "Count of offers by website.",
                 "Count of offers by position.",
@@ -82,14 +82,18 @@ if start_date <= end_date:
                 showlegend=False,
                 text=df_selected_count_by_position.company,
             ),
-            row=1,
-            col=2,
+            row=2,
+            col=1,
         )
         # Update yaxis properties
         fig1.update_yaxes(title_text="Count", row=1, col=1)
-        fig1.update_yaxes(title_text="Count", row=1, col=2)
+        fig1.update_yaxes(title_text="Count", row=2, col=1)
         fig1.update_layout(
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+            legend=dict(
+                orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1
+            ),
+            height=1000,
+            width=800,
         )
         st.plotly_chart(fig1, use_container_width=True)
 
