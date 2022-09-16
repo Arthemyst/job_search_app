@@ -9,7 +9,7 @@ User can download filtered offers as csv file.
 Added button to upload current offers details.
 
 ## Website visualization
-![image](https://user-images.githubusercontent.com/59807704/190414478-3f6bf2dd-f9cc-456b-aa62-912b0dc2fc02.png)
+![image](https://user-images.githubusercontent.com/59807704/190631081-6735d007-8f9d-42d1-b7fc-ef604f27e1f3.png)
 ![image](https://user-images.githubusercontent.com/59807704/190413956-0fde46c9-6e02-4272-b23b-56eceed08105.png)
 
 
