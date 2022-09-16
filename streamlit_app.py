@@ -11,7 +11,7 @@ import pytz
 st.title("Job offers:")
 df = sf.merge_dataframes()
 if st.button("Update offers data"):
-    st.legacy_caching.clear_cache()
+    st.runtime.legacy_caching.clear_cache()
     df = sf.merge_dataframes()
     PL = pytz.timezone("Europe/Warsaw")
     load_datetime = datetime.now().astimezone(PL).strftime("%m/%d/%Y, %H:%M:%S")
