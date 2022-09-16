@@ -5,10 +5,13 @@ import streamlit as st
 from plotly.subplots import make_subplots
 
 import scraping_functions as sf
+import datetime
 
 st.title("Job offers:")
 df = sf.merge_dataframes()
-
+if st.button("Update offers data"):
+    df = sf.merge_dataframes()
+    st.write(f"Update time: {datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
 # Sidebar - Position selection
 sorted_position_unique = sorted(df["position"].unique())
 selected_position = st.sidebar.multiselect(
