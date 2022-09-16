@@ -5,13 +5,17 @@ import streamlit as st
 from plotly.subplots import make_subplots
 
 import scraping_functions as sf
-import datetime
+from datetime import datetime, timezone, date
+import pytz
+from tzlocal import get_localzone
 
 st.title("Job offers:")
 df = sf.merge_dataframes()
 if st.button("Update offers data"):
     df = sf.merge_dataframes()
-    st.write(f"Update time: {datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
+    PL = pytz.timezone("Europe/Warsaw")
+    load_datetime = datetime.now().astimezone(PL).strftime("%m/%d/%Y, %H:%M:%S")
+    st.write(f"Update time: {load_datetime}")
 # Sidebar - Position selection
 sorted_position_unique = sorted(df["position"].unique())
 selected_position = st.sidebar.multiselect(
@@ -28,8 +32,8 @@ selected_website = st.sidebar.multiselect(
 # Sidebar - date range
 
 last_day = df["publication date"].min()
-last_date = datetime.datetime.strptime(last_day, "%Y-%m-%d")
-today = datetime.date.today()
+last_date = datetime.strptime(last_day, "%Y-%m-%d")
+today = date.today()
 
 end_date = st.sidebar.date_input("To:", today)
 start_date = st.sidebar.date_input("From:", last_date)
