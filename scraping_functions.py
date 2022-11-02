@@ -72,7 +72,7 @@ def get_bulldog_job_details(job_element):
     page_job_element = requests.get(link_url)
     soup_page = BeautifulSoup(page_job_element.content, "html.parser")
     publication_date_element = soup_page.find(
-        "p", class_="text-gray-300 text-xs xl:text-sm mb-0.5"
+        "p", class_="text-md xl:text-c22 leading-6"
     )
     days_after_publication = int(
         re.findall(r"\b\d+\b", publication_date_element.text.strip())[0]
@@ -102,17 +102,19 @@ def get_nofluffjobs_job_details(job_element):
     soup_page = BeautifulSoup(page_job_element.content, "html.parser")
     position = soup_page.find("span", class_="mr-10 font-weight-medium").text.strip()
     publication_date_element = soup_page.find("div", class_="posting-time-row")
-
-    days_after_publication = re.findall(
-        r"\b\d+\b", publication_date_element.text.strip()
-    )
-    if len(days_after_publication) == 0:
-        publication_date = datetime.today().strftime("%Y-%m-%d")
-
+    if not publication_date_element:
+        publication_date = "null"
     else:
-        publication_date = (
-            datetime.today() - (timedelta(days=int(days_after_publication[0])))
-        ).strftime("%Y-%m-%d")
+        days_after_publication = re.findall(
+            r"\b\d+\b", publication_date_element.text.strip()
+        )
+        if len(days_after_publication) == 0:
+            publication_date = datetime.today().strftime("%Y-%m-%d")
+
+        else:
+            publication_date = (
+                datetime.today() - (timedelta(days=int(days_after_publication[0])))
+            ).strftime("%Y-%m-%d")
 
     return (publication_date, company, job_title, position, website_name, link_url)
 
@@ -132,7 +134,7 @@ def dict_creator(
 
 
 def nofluffjobs_page_job_offers(
-    url="https://nofluffjobs.com/pl/praca-zdalna/python?criteria=city%3Dwarszawa%20seniority%3Dtrainee,junior%20%20salary<pln12000m&page=1",
+    url="https://nofluffjobs.com/pl/praca-zdalna/Python?criteria=city%3Dwarszawa%20seniority%3Dtrainee,junior&page=1",
 ) -> list:
 
     nofluffjobs_list = list()
